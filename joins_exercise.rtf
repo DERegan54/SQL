@@ -1,0 +1,303 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2638
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Italic;\f2\fnil\fcharset0 .AppleSystemUIFontMonospaced-Regular;
+}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;\red0\green0\blue255;
+\red15\green112\blue1;\red27\green31\blue35;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c100000;\cssrgb\c0\c0\c100000;
+\cssrgb\c0\c50196\c0;\cssrgb\c14118\c16078\c18431;}
+\margl1440\margr1440\vieww15740\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs36 \cf2 \cb3 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 PART ONE: GETTING \strokec4 STARTED\cb1 \strokec2 \
+\pard\pardeftab720\partightenfactor0
+
+\fs24 \cf2 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \cb3 \strokec5  
+\fs28 \ul QUERY 1:\cb1 \strokec2 \
+
+\fs24 \cb3 \ulnone \strokec5  My attempt:  SELECT * \cb1 \strokec2 \
+\cb3 \strokec5                 FROM owners \cb1 \strokec2 \
+\cb3 \strokec5            FULL JOIN vehicles on owners.id-vehicles.owner_id;\cb1 \strokec2 \
+\
+\cb3 \strokec5  Solution:    SELECT * \cb1 \strokec2 \
+\cb3 \strokec5                 FROM owners o \cb1 \strokec2 \
+\cb3 \strokec5      FULL OUTER JOIN vehicles v on o.id=v.owner_id;\cb1 \strokec2 \
+\
+\
+\
+
+\fs28 \cb3 \ul \strokec5  QUERY 2:
+\fs24 \cb1 \ulnone \strokec2 \
+\cb3 \strokec5  My attempt:  SELECT first_name, last_name, count \cb1 \strokec2 \
+\cb3 \strokec5                 FROM vehicles \cb1 \strokec2 \
+\cb3 \strokec5             ORDER BY first_name ASC;\cb1 \strokec2 \
+\
+\cb3 \strokec5  Solution:    SELECT first_name, last_name, COUNT(owner_id) \cb1 \strokec2 \
+\cb3 \strokec5                 FROM owners o \cb1 \strokec2 \
+\cb3 \strokec5                 JOIN vehicles v on o.id=v.owner_id \cb1 \strokec2 \
+\cb3 \strokec5             GROUP BY (first_name, last_name) \cb1 \strokec2 \
+\cb3 \strokec5             ORDER BY first_name;\cb1 \strokec2 \
+\
+\
+\
+
+\fs28 \cb3 \ul \strokec5  QUERY 3:
+\fs24 \cb1 \ulnone \strokec2 \
+\cb3 \strokec5  My attempt:   SELECT first_name, last_name, AVERAGE(price) AS average_price, COUNT(owner_id) AS count, \cb1 \strokec2 \
+\cb3 \strokec5                  FROM owners o \cb1 \strokec2 \
+\cb3 \strokec5                  JOIN vehicles v on o.id=v.owner_id \cb1 \strokec2 \
+\cb3 \strokec5                 WHERE COUNT(owner_id)>1 AND AVERAGE(price)>1000 \cb1 \strokec2 \
+\cb3 \strokec5                    ORDER BY first_name DESC;\cb1 \strokec2 \
+\
+\cb3 \strokec5  Solution:     SELECT first_name, last_name, ROUND(AVG(price)) as average_price, COUNT(owner_id) \cb1 \strokec2 \
+\cb3 \strokec5                  FROM owners o \cb1 \strokec2 \
+\cb3 \strokec5                  JOIN vehicles v on o.id=v.owner_id \cb1 \strokec2 \
+\cb3 \strokec5              GROUP BY (first_name, last_name) \cb1 \strokec2 \
+\cb3 \strokec5                HAVING COUNT(owner_id)>1 AND ROUND(AVG(price))>1000 \cb1 \strokec2 \
+\cb3 \strokec5              ORDER BY first_name DESC;\
+\
+\
+\
+
+\fs36 PART TWO: SQL Zoo - Tutorials 6 & 7\
+\
+
+\fs28 \ul Tutorial 6:
+\fs36 \ulnone \
+
+\fs24 1. Modify it to show the 
+\f1\i matchid 
+\f0\i0 and 
+\f1\i player
+\f0\i0  name for all goals scored by Germany.  To identify German players, check for: teamid=\'91GER\'92.\
+\
+	SELECT matched, player\
+	  FROM goal\
+	 WHERE teamid=\'91GER\'92\
+\
+2. Show id, stadium, team1, team2 for just game 1012.\
+\
+	SELECT id, stadium, team1, team2\
+	  FROM game\
+	 WHERE id=1012\
+\
+3. Modify it to show the player, teamid, stadium and made for every German goal.\
+\
+	SELECT player, teamid, stadium, mdate\
+	  FROM game\
+	  JOIN goal ON (id-matchid)\
+	 WHERE teamid=\'91GER\'92\cb1 \strokec2 \
+\
+4. Show the team1, team2 and player for every goal scored by a player called Mario.\
+	SELECT team1, team2, player\
+	  FROM game a\
+	  JOIN game o on a.id=o.matchid\
+      WHERE player LIKE \'91Mario%\'92\
+\
+5. Show player, teamed, coach, time for all goals scored in the first 10 minutes gtime<=10.\
+	SELECT player, teamid, coach, gtime\
+ 	  FROM goal g\
+	  JOIN eteam e on g.team=e.id\
+      WHERE gtime<=10\
+\
+6. List the dates of the matches and the name of the team in which \'91Fernando Santos\'92 was the team 1 coach.\
+	SELECT date, teiamname\
+       FROM game\
+       JOIN eteam on team1=eteam.id\
+	 WHERE coach=\'91Fernando Santos\'92\
+\
+7. List the player for every goal scored in a game where the stadium was \'91National Stadium, Warsaw\'92.\
+	SELECT player\
+       FROM game a \
+       JOIN goal o on a.id=o.matchid\
+      WHERE stadium=\'91National Stadium, Warsaw\'92\
+\
+8. The example query shows all goals scored in the Germany-Greece quarterfinal.  Instead show the name of all players who scored a goal against Germany.\
+	SELECT DISTINCT player\
+       FROM game\
+       JOIN goal on matchid=id\
+      WHERE (team1=\'91GER\'92 OR team2=\'91GER\'92\
+        AND teamed !=\'91GER\'92\
+\
+9. Show teamname and total number of goals scored.\
+	SELECT teamname, COUNT(*)\
+       FROM eteam\
+       JOIN goal on id=teamid\
+   GROUP BY teamname\
+\
+10. Show the stadium and the number of goals scored in each stadium.\
+	SELECT stadium, COUNT(*)\
+       FROM goal\
+       JOIN game on matchid=id\
+   GROUP BY stadium\
+\
+11. For every match involving \'91POL\'92 show the matchid, date, and the number of goals scored.\
+	SELECT matchid, mdate, COUNT(*)\
+       FROM game\
+       JOIN goal ON matchid=id\
+      WHERE (team1 = \'91POL\'92 OR team2 = \'91POL\'92)\
+   GROUP BY matchid, made\
+\
+12. For every match where \'91GER\'92 scored, show matchid match date and the number of goals scored by \'91GER\'92.\
+	SELECT matchid, mdate, COUNT(*)\
+       FROM goal\
+       JOIN game on matchid=id\
+      WHERE teamid=\'91GER\'92\
+   GROUP BY matchid, made\
+\
+13. List every match with the goals scored by each team as shown \
+\
+\
+\
+\pard\pardeftab720\partightenfactor0
+
+\fs28 \cf2 \ul \ulc2 Tutorial 7:\
+
+\fs24 \
+\ulnone 1. List the films where the yr is 1962 [Show id, title].\
+	SELECT id, title\
+       FROM movie\
+      WHERE yr=1962\
+\
+2.When was Citizen Kane released?  Give year of \'91Citizen Kane\'92. \
+	SELECT yr\
+       FROM movie\
+      WHERE title=\'91Citizen Kane\'92\
+\
+3. List all of the Star Trek movies, include the id, title and yr (all of these movies include the words Star Trek in the title). Order results by year.\
+	SELECT id, title, yr\
+       FROM movie\
+      WHERE title LIKE \'92Star Trek%\'92\
+\
+4. What id number does the actor \'91Glenn Close\'92 have?\
+	SELECT id\
+       FROM actor\
+      WHERE name=\'91Glenn Close\'92\
+\
+5. What is the id of the film \'91Casablanca\'92?\
+	SELECT id\
+       FROM movie\
+      WHERE title=\'91Casablanca\'92\
+\
+6. Obtain the cast list for \'91Casablanca\'92.\
+	SELECT name\
+  	  FROM casting\
+       JOIN actor ON (actor.id=actorid\
+       JOIN movie ON (movie.id=movieid)\
+      WHERE title=\'91Casablanca\'92\
+\
+7. Obtain the cast list for the film \'91Alien\'92.\
+	
+\f2 \cf6 \strokec6 SELECT name \
+       FROM casting\
+	  JOIN actor ON (actor.id=actorid)\
+       JOIN movie ON (movie.id=movieid)\
+      WHERE title=\'91Alien\'92\
+\
+8. List the films in which \'91Harrison Ford\'92 has appeared.
+\f0 \cf2 \strokec2 \
+	SELECT title\
+       FROM casting\
+       JOIN movie ON (movie.id=movieid)\
+       JOIN actor ON (actor.id=actorid)\
+	 WHERE name=\'91Harrison Ford\'92\
+\
+9. List the films where \'91Harrison Ford\'92 has appeared - but not in the starring role.\
+	SELECT title\
+       FROM casting\
+       JOIN movie ON (movie.id=movieid)\
+       JOIN actor ON (actor.id=actorid)\
+      WHERE name=\'91Harrison Ford\'92 AND ord>1\
+\
+\
+10. List the films together with the leading star for all 1962 films.\
+	SELECT title, name\
+       FROM casting\
+       JOIN movie ON (movie.id=movieid)\
+       JOIN actor ON (actor.id=actorid)\
+      WHERE yr=1962 AND ord=1\
+\
+11. Which were the busiest years for \'91Rock Hudson\'92, show the year and the number of movies he made each year for any year in which he made more than 2 movies.\
+	SELECT yr, COUNT(title)\
+       FROM movie\
+       JOIN casting ON (movie.id=movieid)\
+       JOIN actor ON (actorid=actor.id)\
+      WHERE name=\'91Rock Hudson\'92\
+   GROUP BY yr\
+     HAVING COUNT(title)>2\
+\
+12. List the film title and the leading actor for all of the films \'91Julie Andrews\'92 played in.\
+	SELECT title, name \
+       FROM casting\
+       JOIN movie ON movie.id=movieid\
+       JOIN actor ON actor.id=actorid\
+      WHERE ord=1 AND movie.id IN (SELECT move.id \
+						       FROM movie\
+     						  JOIN casting ON movie.id=movieid\
+							  JOIN actor ON actor.id=actorid\
+							 WHERE actor.name=\'91Julie Andrews\'92\
+\
+13. Obtain a list, in alphabetical order, of actors who\'92ve had at least 15 starring roles.\
+	SELECT DISTINCT name\
+       FROM casting \
+       JOIN movie ON movie.id=movieid\
+       JOIN actor ON actor.id=actorid\
+      WHERE actorid IN (SELECT actorid\
+                          FROM casting \
+                         WHERE ord=1\
+                      GROUP BY actorid\
+				    HAVING COUNT(actorid)>=15\
+\
+14. List the films released in the year 1978 ordered by the number of actors in the case, then by title.\
+	SELECT title, COUNT(actor.id) \
+    FROM casting\
+    JOIN movie ON movieid = movie.id\
+    WHERE yr = 1978\
+ GROUP BY actorid, title\
+ ORDER BY COUNT(actor.id), title	\
+\
+\
+15. List all the people who have worked with \'91Art Garfunkel\'92.\
+	SELECT DISTINCT name \
+       FROM casting\
+       JOIN actor ON actorid=actor.id\
+	 WHERE name != \'91Art Garfunkel\'92 AND movieid IN (SELECT movieid\
+										    FROM movie\
+										    JOIN casting on movieid=movie.id\
+										    JOIN actor ON actor id-actor.id\
+										   WHERE actor.name=\'91ArtGarfunkel\'92)\
+												\
+\
+\
+\
+\
+	 \
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+	}

@@ -1,3 +1,5 @@
+
+
 -- from the terminal run:
 -- psql < air_traffic.sql
 
@@ -7,52 +9,31 @@ CREATE DATABASE air_traffic;
 
 \c air_traffic
 
-CREATE TABLE tickets
-(
-  id SERIAL PRIMARY KEY,
-  first_name TEXT NOT NULL,
-  last_name TEXT NOT NULL,
-  seat TEXT NOT NULL,
-  departure TIMESTAMP NOT NULL,
-  arrival TIMESTAMP NOT NULL,
-  airline TEXT NOT NULL,
-  airline_id INTEGER REFERENCES airlines.id,
-  from_city TEXT NOT NULL,
-  from_city_id INTEGER REFERENCES cities.id,
-  from_country TEXT NOT NULL,
-  to_city TEXT NOT NULL,
-  to_city_id INTEGER REFERENCES cities.id,
-  to_country TEXT NOT NULL
-);
-
-
-CREATE TABLE airlines
-(
-  id SERIAL PRIMARY KEY,
-  cities TEXT REFERENCES cities.id,
-  countries TEXT
-)
-
-
-CREATE TABLE flights
-(
-  id SERIAL PRIMARY KEY,
-  airline_id INTEGER REFERENCES airlines.id,
-  from_city_id INTEGER REFERENCES cities.id,
-  to_city_id INTEGER REFERENCES cities.id,
-  date DATE,
-  departure TIMESTAMP,
-  arrival TIMESTAMP,
-  passenger_id INTEGER REFERENCES passengers.id
-)
-
 
 CREATE TABLE cities
 (
   id SERIAL PRIMARY KEY,
   name TEXT,
   country TEXT
-)
+);
+
+CREATE TABLE tickets
+(
+  id SERIAL PRIMARY KEY,
+  seat TEXT NOT NULL,
+  departure TIMESTAMP NOT NULL,
+  arrival TIMESTAMP NOT NULL,
+  from_city_id INTEGER REFERENCES cities.id,
+  to_city_id INTEGER REFERENCES cities.id,
+);
+
+
+CREATE TABLE flights
+(
+  id SERIAL PRIMARY KEY,
+  airline TEXT
+  ticket_id INTEGER REFERENCES tickets.id
+);
 
 
 CREATE TABLE passengers
@@ -61,9 +42,7 @@ CREATE TABLE passengers
   first_name TEXT NOT NULL, 
   last_name TEXT NOT NULL, 
   flight_id INTEGER REFERENCES flights.id,
-  ticket_id INTEGER REFERENCES tickets.id,
-  seat TEXT NOT NULL 
-  )
+);
 
 
 INSERT INTO tickets

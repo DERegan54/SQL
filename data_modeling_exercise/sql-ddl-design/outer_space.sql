@@ -7,15 +7,30 @@ CREATE DATABASE outer_space;
 
 \c outer_space
 
+
+CREATE TABLE galaxies
+(
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+);
+
 CREATE TABLE planets
 (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   orbital_period_in_years FLOAT NOT NULL,
   orbits_around TEXT NOT NULL,
-  galaxy TEXT NOT NULL,
-  moons TEXT[]
+  galaxy_id INTEGER REFERENCES galaxies.id,
 );
+
+CREATE TABLE moons
+(
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  planet_id INTEGER REFERENCES planets.id
+);
+
+
 
 INSERT INTO planets
   (name, orbital_period_in_years, orbits_around, galaxy, moons)

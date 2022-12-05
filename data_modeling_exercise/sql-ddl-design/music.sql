@@ -27,8 +27,8 @@ CREATE TABLE producers
 CREATE TABLE albums(
   id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
-  artists_id INTEGER REFERENCES artists.id,
-  producers_id INTEGER REFERENCES producers.id
+  artists_id INTEGER REFERENCES artists,
+  producers_id INTEGER REFERENCES producers
 );
 
 CREATE TABLE songs
@@ -37,9 +37,7 @@ CREATE TABLE songs
   title TEXT NOT NULL,
   duration_in_seconds INTEGER NOT NULL,
   release_date DATE NOT NULL,
-  artist_id INTEGER REFERENCES artists.id,
-  album_id INTEGER REFERENCES albums.id,
-  producers_id INTEGER REFERENCES producers.id
+  album_id INTEGER REFERENCES albums
 );
 
 
